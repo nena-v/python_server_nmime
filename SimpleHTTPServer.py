@@ -70,12 +70,16 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         f = None
         #V : os.path.isdir(path) returns True if path is an existing directory. 
         if os.path.isdir(path):
-            """ urlparse() : from urllib.parse module : Parse a URL into six components, returning a 6-item named tuple. 
+            """V: urlparse() : from urllib.parse module : Parse a URL
+            into six components, returning a 6-item named tuple. 
             >>> o = urlparse('http://www.cwi.nl:80/%7Eguido/Python.html')
             >>> 0
             ParseResult(scheme='http', netloc='www.cwi.nl:80', path='/%7Eguido/Python.html', params='', query='', fragment='')
 
-            urlsplit() : similar to urlparse(), but does not split the params from the URL. Note : URL Parameters are parameters whose values are set dynamically in a page's URL, and can be accessed by its template and its data sources. """
+            urlsplit() : similar to urlparse(), but does not split the
+            params from the URL. Note : URL Parameters are parameters 
+            whose values are set dynamically in a page's URL, and can be
+            accessed by its template and its data sources. """
             parts = urlparse.urlsplit(self.path)
             # if the element path returned by urlparse doesn't end with / : modifies the URL to add the /
             if not parts.path.endswith('/'):
@@ -109,7 +113,10 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         try:
             self.send_response(200)
             self.send_header("Content-type", ctype)
-            #V : os.fstat() method in Python is used to get the status of a file descriptor. The returned ‘stat_result’ object is a tuple with name attributes (ex : st_ino > inode number on Unix). fileno return the file descriptor.
+            """V : os.fstat() method in Python is used to get the status 
+            of a file descriptor. The returned ‘stat_result’ object is a 
+            tuple with name attributes (ex : st_ino > inode number on Unix). 
+            fileno returns the file descriptor."""
             fs = os.fstat(f.fileno())
             #V : fs[6] : size of the file in bytes 
             self.send_header("Content-Length", str(fs[6]))
@@ -137,11 +144,16 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         list.sort(key=lambda a: a.lower())
         f = StringIO()
         """V : URLs can only be sent over the Internet using the ASCII character-set.
-        Since URLs often contain characters outside the ASCII set, the URL has to be converted into a valid ASCII format.
-        URL encoding replaces unsafe ASCII characters with a "%" followed by two hexadecimal digits.
-        URLs cannot contain spaces. URL encoding normally replaces a space with a plus (+) sign or with %20.
-        urllib.unquote(string, encoding='utf-8', errors='replace') replaces %xx escapes by their single-character equivalent. 
-        cgi.escape() :  cgi.escape(s[, quote]) : converts the characters '&', '<' and '>' in string s to HTML-safe sequences."""
+        Since URLs often contain characters outside the ASCII set, 
+        the URL has to be converted into a valid ASCII format.
+        URL encoding replaces unsafe ASCII characters with a "%" 
+        followed by two hexadecimal digits.
+        URLs cannot contain spaces. URL encoding normally replaces 
+        a space with a plus (+) sign or with %20.
+        urllib.unquote(string, encoding='utf-8', errors='replace') 
+        replaces %xx escapes by their single-character equivalent. 
+        cgi.escape() :  cgi.escape(s[, quote]) : converts the characters 
+        '&', '<' and '>' in string s to HTML-safe sequences."""
         displaypath = cgi.escape(urllib.unquote(self.path))
         f.write('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">')
         f.write("<html>\n<title>Directory listing for %s</title>\n" % displaypath)
@@ -228,10 +240,18 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
         """
 
-        """V : since different operating systems have different path name conventions, there are several versions of this module in the standard library. The os.path module is always the path module suitable for the operating system Python is running on, and therefore usable for local paths. However, you can also import and use the individual modules if you want to manipulate a path that is always in one of the different formats. They all have the same interface:
+        """V : since different operating systems have different path name 
+        conventions, there are several versions of this module in the standard library. 
+        The os.path module is always the path module suitable for the operating 
+        system Python is running on, and therefore usable for local paths. 
+        However, you can also import and use the individual modules if you want 
+        to manipulate a path that is always in one of the different formats. 
+        They all have the same interface:
         posixpath for UNIX-style paths
         ntpath for Windows paths"""
-        """V :  os.path.splitext(path): splits the pathname path into a pair (root, ext) such that root + ext == path, and ext is empty or begins with a period and contains at most one period.""" 
+        """V :  os.path.splitext(path): splits the pathname path into a pair (root, ext)
+        such that root + ext == path, and ext is empty or begins with a period 
+        and contains at most one period.""" 
         base, ext = posixpath.splitext(path)
         if ext in self.extensions_map:
             return self.extensions_map[ext]
@@ -241,7 +261,8 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         else:
             return self.extensions_map['']
 
-    #V : mimetypes.inited : Flag indicating whether or not the global data structures have been initialized. This is set to True by init().
+    """V : mimetypes.inited : Flag indicating whether or not the global data structures 
+    have been initialized. This is set to True by init()."""
     if not mimetypes.inited:
         mimetypes.init() # try to read system mime.types
     extensions_map = mimetypes.types_map.copy()
